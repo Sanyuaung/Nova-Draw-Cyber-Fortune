@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { GameState, WinnerData } from './types';
 import ScratchCard from './components/ScratchCard';
+import { Sparkles } from './components/Sparkles';
 import { getWinnerHype } from './services/geminiService';
 
 const Logo = () => (
@@ -83,6 +84,9 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative">
+      {/* Global Sparkles during reveal */}
+      {gameState === GameState.REVEALED && <Sparkles fullPage={true} />}
+
       <header className="mb-6 text-center flex flex-col items-center scale-90 md:scale-100">
         <Logo />
         <h1 className="text-2xl md:text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-white to-purple-500 mb-1 uppercase tracking-[0.2em]">
@@ -91,7 +95,7 @@ const App: React.FC = () => {
         <div className="flex items-center gap-2">
           <div className="h-px w-4 bg-gradient-to-r from-transparent to-cyan-500"></div>
           <p className="text-[8px] uppercase tracking-[0.6em] text-cyan-400/80 font-bold">
-            Protocol 7.4
+            Protocol F21
           </p>
           <div className="h-px w-4 bg-gradient-to-l from-transparent to-cyan-500"></div>
         </div>
@@ -177,11 +181,22 @@ const App: React.FC = () => {
                 height={260} 
                 onReveal={() => setGameState(GameState.REVEALED)}
               >
-                <div className="w-full h-full flex flex-col items-center justify-center bg-transparent">
-                  <div className="text-5xl mb-4 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] animate-bounce">✨</div>
-                  <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl px-4 text-center leading-tight break-all">
-                    {winner.name}
-                  </h2>
+                <div className="w-full h-full flex flex-col items-center justify-center bg-transparent relative">
+                  {gameState === GameState.REVEALED ? (
+                    <Sparkles>
+                      <div className="text-5xl mb-4 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]">✨</div>
+                      <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl px-4 text-center leading-tight break-all">
+                        {winner.name}
+                      </h2>
+                    </Sparkles>
+                  ) : (
+                    <div className="flex flex-col items-center">
+                      <div className="text-5xl mb-4 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] animate-bounce">✨</div>
+                      <h2 className="text-3xl md:text-5xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl px-4 text-center leading-tight break-all">
+                        {winner.name}
+                      </h2>
+                    </div>
+                  )}
                   <div className="mt-6 px-4 py-1.5 border border-cyan-500/50 rounded-full bg-cyan-500/5 backdrop-blur-md">
                     <p className="text-[9px] text-cyan-400 font-bold uppercase tracking-[0.2em]">Selected Subject</p>
                   </div>
