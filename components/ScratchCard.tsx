@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 
 interface ScratchCardProps {
@@ -9,8 +10,8 @@ interface ScratchCardProps {
 
 const ScratchCard: React.FC<ScratchCardProps> = ({ 
   onReveal, 
-  width = 340, 
-  height = 200, 
+  width = 480, 
+  height = 280, 
   children 
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -62,21 +63,21 @@ const ScratchCard: React.FC<ScratchCardProps> = ({
 
     // Center Label
     ctx.fillStyle = '#fff'; 
-    ctx.font = '700 18px "Syncopate"';
+    ctx.font = '700 24px "Syncopate"';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.shadowBlur = 10;
+    ctx.shadowBlur = 15;
     ctx.shadowColor = '#00f3ff';
-    ctx.fillText('ACCESS GRANTED', width / 2, height / 2 - 10);
-    ctx.font = '400 10px "Syncopate"';
-    ctx.fillText('SCRATCH TO DECRYPT', width / 2, height / 2 + 15);
+    ctx.fillText('ACCESS GRANTED', width / 2, height / 2 - 15);
+    ctx.font = '400 12px "Syncopate"';
+    ctx.fillText('SCRATCH TO DECRYPT', width / 2, height / 2 + 20);
     ctx.shadowBlur = 0;
     
     // Aesthetic Border
     ctx.strokeStyle = '#00f3ff';
     ctx.lineWidth = 2;
-    ctx.setLineDash([10, 5]);
-    ctx.strokeRect(10, 10, width - 20, height - 20);
+    ctx.setLineDash([12, 6]);
+    ctx.strokeRect(12, 12, width - 24, height - 24);
     ctx.setLineDash([]);
   }, [width, height]);
 
@@ -118,7 +119,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({
     ctx.globalCompositeOperation = 'destination-out';
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
-    ctx.lineWidth = 55;
+    ctx.lineWidth = 65;
 
     ctx.beginPath();
     if (lastPos.current) {
@@ -131,13 +132,13 @@ const ScratchCard: React.FC<ScratchCardProps> = ({
 
     // Add "Digital Sparks" (temporary glitch particles)
     ctx.globalCompositeOperation = 'source-over';
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 4; i++) {
       ctx.fillStyle = i % 2 === 0 ? '#00f3ff' : '#9d00ff';
       ctx.globalAlpha = 0.5;
-      const size = Math.random() * 15;
+      const size = Math.random() * 20;
       ctx.fillRect(
-        currentX + (Math.random() - 0.5) * 60,
-        currentY + (Math.random() - 0.5) * 60,
+        currentX + (Math.random() - 0.5) * 80,
+        currentY + (Math.random() - 0.5) * 80,
         size,
         2
       );
@@ -161,7 +162,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({
   return (
     <div 
       className={`relative inline-block select-none rounded-2xl overflow-hidden border-2 transition-all duration-500 bg-black ${!revealed ? 'ready-glow border-cyan-500/50' : 'border-white/10'}`} 
-      style={{ width, height }}
+      style={{ width, height, maxWidth: '100%' }}
     >
       {/* Background Content (Hidden until scratch) */}
       <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-black/80">

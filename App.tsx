@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { GameState, WinnerData } from './types';
 import ScratchCard from './components/ScratchCard';
@@ -77,10 +78,10 @@ const App: React.FC = () => {
 
   const shuffleElements = useMemo(() => {
     if (names.length === 0) return [];
-    return Array.from({ length: 15 }).map((_, i) => ({
+    return Array.from({ length: 25 }).map((_, i) => ({
       name: names[i % names.length],
-      delay: i * 0.3,
-      size: 14 + Math.random() * 20,
+      delay: i * 0.2,
+      size: 16 + Math.random() * 28,
       color: i % 2 === 0 ? 'text-cyan-400' : 'text-purple-400'
     }));
   }, [names]);
@@ -101,38 +102,38 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <main className="w-full max-w-2xl glass-panel rounded-[3rem] p-10 md:p-14 border-t border-l border-white/10 relative overflow-hidden">
+      <main className="w-full max-w-5xl glass-panel rounded-[3rem] p-10 md:p-20 border-t border-l border-white/10 relative overflow-hidden transition-all duration-500">
         {/* Subtle background glow */}
-        <div className="absolute -top-20 -right-20 w-64 h-64 bg-cyan-500/10 blur-[100px] rounded-full"></div>
-        <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-purple-500/10 blur-[100px] rounded-full"></div>
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-cyan-500/10 blur-[120px] rounded-full"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-500/10 blur-[120px] rounded-full"></div>
         
         {gameState === GameState.IDLE && (
           <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <div className="space-y-5">
+            <div className="space-y-6">
               <div className="flex items-center justify-between px-2">
-                <label className="text-[11px] font-bold text-cyan-400 uppercase tracking-[0.3em] flex items-center gap-3">
-                  <span className="relative flex h-2 w-2">
+                <label className="text-[12px] font-bold text-cyan-400 uppercase tracking-[0.4em] flex items-center gap-3">
+                  <span className="relative flex h-2.5 w-2.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
                   </span>
                   Registry Active
                 </label>
-                <div className="text-[10px] font-bold text-white/30 border border-white/10 px-3 py-1 rounded-full">
-                  {names.length} ENTRIES
+                <div className="text-[11px] font-bold text-white/30 border border-white/10 px-4 py-1.5 rounded-full bg-white/5">
+                  {names.length} ACTIVE ENTRIES
                 </div>
               </div>
               <textarea
                 value={rawInput}
                 onChange={(e) => setRawInput(e.target.value)}
-                placeholder="INPUT SUBJECT NAMES HERE..."
-                className="w-full h-60 bg-black/40 border border-white/10 rounded-[2rem] p-8 text-white font-semibold text-xl focus:outline-none focus:border-cyan-500/50 transition-all placeholder:text-white/5 backdrop-blur-xl shadow-inner scrollbar-hide"
+                placeholder="0x: ENTER NAMES FOR QUANTUM EXTRACTION..."
+                className="w-full h-80 bg-black/40 border border-white/10 rounded-[2.5rem] p-10 text-white font-semibold text-2xl focus:outline-none focus:border-cyan-500/50 transition-all placeholder:text-white/5 backdrop-blur-xl shadow-inner scrollbar-hide"
               />
             </div>
 
             <button
               onClick={handleStart}
               disabled={names.length < 2}
-              className={`w-full py-8 rounded-[2rem] font-black text-2xl uppercase tracking-[0.5em] transition-all cyber-btn border ${
+              className={`w-full py-10 rounded-[2.5rem] font-black text-3xl uppercase tracking-[0.6em] transition-all cyber-btn border ${
                 names.length >= 2 ? 'border-cyan-500 text-cyan-400' : 'opacity-20 grayscale border-white/10 text-white/40'
               }`}
             >
@@ -145,7 +146,7 @@ const App: React.FC = () => {
           <div className="flex flex-col items-center justify-center py-20 space-y-16 animate-in fade-in duration-500">
             <div className="vortex-container">
               {/* Singularity Core during shuffle */}
-              <div className="absolute w-20 h-20 bg-white rounded-full blur-[40px] opacity-30 animate-pulse"></div>
+              <div className="absolute w-32 h-32 bg-white rounded-full blur-[60px] opacity-30 animate-pulse"></div>
               {shuffleElements.map((el, i) => (
                 <div 
                   key={i} 
@@ -153,47 +154,52 @@ const App: React.FC = () => {
                   style={{ 
                     animationDelay: `${el.delay}s`,
                     fontSize: `${el.size}px`,
-                    left: `${20 + Math.random() * 60}%`,
-                    top: `${20 + Math.random() * 60}%`,
+                    left: `${15 + Math.random() * 70}%`,
+                    top: `${15 + Math.random() * 70}%`,
                   }}
                 >
                   {el.name}
                 </div>
               ))}
             </div>
-            <div className="text-center space-y-4">
-              <h4 className="text-cyan-400 text-sm font-black uppercase tracking-[1em] animate-pulse">Collapsing Reality</h4>
-              <p className="text-[10px] text-white/30 font-bold uppercase tracking-[0.4em]">Singularity formation in progress</p>
+            <div className="text-center space-y-6">
+              <h4 className="text-cyan-400 text-lg font-black uppercase tracking-[1.2em] animate-pulse">Collapsing Reality</h4>
+              <p className="text-xs text-white/30 font-bold uppercase tracking-[0.6em]">Singularity formation in progress</p>
             </div>
           </div>
         )}
 
         {(gameState === GameState.SCRATCHING || gameState === GameState.REVEALED) && winner && (
           <div className="flex flex-col items-center py-6 animate-in zoom-in-95 duration-1000">
-            <header className="text-center mb-12">
-              <p className="text-[10px] text-cyan-400 font-bold uppercase tracking-[0.8em] mb-4">Outcome Decrypted</p>
-              <h3 className="text-3xl font-black text-white uppercase tracking-widest italic">
+            <header className="text-center mb-16">
+              <p className="text-xs text-cyan-400 font-bold uppercase tracking-[1em] mb-4">Outcome Decrypted</p>
+              <h3 className="text-4xl font-black text-white uppercase tracking-widest italic">
                 {gameState === GameState.REVEALED ? "PROTOCOL SUCCESS" : "HOLOGRAPHIC SEAL"}
               </h3>
+              <div className="w-24 h-1 bg-gradient-to-r from-transparent via-cyan-500 to-transparent mx-auto mt-6"></div>
             </header>
             
-            <ScratchCard onReveal={() => setGameState(GameState.REVEALED)}>
+            <ScratchCard 
+              width={720} 
+              height={400} 
+              onReveal={() => setGameState(GameState.REVEALED)}
+            >
               <div className="w-full h-full flex flex-col items-center justify-center bg-transparent">
-                <div className="text-6xl mb-6 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.8)] animate-bounce">✨</div>
-                <h2 className="text-4xl md:text-6xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl px-6 text-center leading-tight">
+                <div className="text-8xl mb-8 filter drop-shadow-[0_0_20px_rgba(255,255,255,0.8)] animate-bounce">✨</div>
+                <h2 className="text-5xl md:text-8xl font-black text-white uppercase italic tracking-tighter drop-shadow-2xl px-10 text-center leading-tight break-all">
                   {winner.name}
                 </h2>
-                <div className="mt-8 px-4 py-1 border border-cyan-500/50 rounded-full">
-                   <p className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest">Selected Essence</p>
+                <div className="mt-12 px-8 py-3 border border-cyan-500/50 rounded-full bg-cyan-500/5 backdrop-blur-md">
+                   <p className="text-sm text-cyan-400 font-bold uppercase tracking-[0.4em]">Selected Essence</p>
                 </div>
               </div>
             </ScratchCard>
 
-            <div className="w-full mt-14 space-y-10">
+            <div className="w-full max-w-3xl mt-16 space-y-12">
               {gameState === GameState.REVEALED && (
-                <div className="animate-in slide-in-from-top-4 duration-1000 p-10 rounded-[2.5rem] bg-white/[0.03] border border-white/10 text-center relative overflow-hidden group shadow-2xl">
+                <div className="animate-in slide-in-from-top-4 duration-1000 p-12 rounded-[3rem] bg-white/[0.03] border border-white/10 text-center relative overflow-hidden group shadow-2xl">
                   <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10 opacity-50"></div>
-                  <p className="text-white text-xl md:text-2xl font-semibold italic leading-relaxed relative z-10 tracking-tight">
+                  <p className="text-white text-2xl md:text-3xl font-semibold italic leading-relaxed relative z-10 tracking-tight">
                     "{winner.fortune}"
                   </p>
                 </div>
@@ -201,7 +207,7 @@ const App: React.FC = () => {
               
               <button
                 onClick={() => { setGameState(GameState.IDLE); setWinner(null); }}
-                className="w-full py-7 rounded-[2rem] font-bold text-sm uppercase tracking-[0.8em] transition-all cyber-btn border-2 border-purple-500/50 text-purple-400"
+                className="w-full py-8 rounded-[2.5rem] font-bold text-lg uppercase tracking-[1em] transition-all cyber-btn border-2 border-purple-500/50 text-purple-400"
               >
                 NEW EXTRACTION
               </button>
@@ -210,14 +216,14 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <footer className="mt-16 flex flex-col items-center gap-4 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-500">
-        <p className="text-white text-[10px] font-bold uppercase tracking-[1.5em] ml-6">
+      <footer className="mt-20 flex flex-col items-center gap-6 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-500">
+        <p className="text-white text-[11px] font-bold uppercase tracking-[1.8em] ml-6">
           Quantum Randomness Engine v4.0
         </p>
-        <div className="flex gap-4">
-          <i className="fa-solid fa-satellite-dish"></i>
-          <i className="fa-solid fa-fingerprint"></i>
-          <i className="fa-solid fa-dna"></i>
+        <div className="flex gap-8 text-xl">
+          <i className="fa-solid fa-satellite-dish hover:text-cyan-400 transition-colors"></i>
+          <i className="fa-solid fa-fingerprint hover:text-purple-400 transition-colors"></i>
+          <i className="fa-solid fa-dna hover:text-pink-400 transition-colors"></i>
         </div>
       </footer>
     </div>
