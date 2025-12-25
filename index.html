@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova Draw | Cyber-Fortune</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%2300f3ff'/><stop offset='100%' style='stop-color:%239d00ff'/></linearGradient></defs><circle cx='50' cy='50' r='45' fill='none' stroke='url(%23g)' stroke-width='5'/><path d='M30 50 L70 50 M50 30 L50 70' stroke='white' stroke-width='8' stroke-linecap='round'/></svg>">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+    
+    :root {
+      --neon-cyan: #00f3ff;
+      --neon-pink: #ff00ea;
+      --neon-purple: #9d00ff;
+      --bg-dark: #020205;
+    }
+
+    * {
+      cursor: none !important; /* Force custom cursor everywhere */
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      background: var(--bg-dark);
+      color: #fff;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-family: 'Syncopate', sans-serif;
+      letter-spacing: 0.5em;
+    }
+
+    /* Custom Neural Cursor */
+    #custom-cursor {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--neon-cyan);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.05s ease-out, width 0.2s, height 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      mix-blend-mode: difference;
+    }
+    #custom-cursor::after {
+      content: '';
+      width: 4px;
+      height: 4px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--neon-cyan);
+    }
+    .cursor-active {
+      width: 60px !important;
+      height: 60px !important;
+      background: rgba(0, 243, 255, 0.1);
+      border-width: 2px !important;
+    }
+
+    /* Background Hyperspace */
+    .space-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -10;
+      background: radial-gradient(circle at center, #0a0a0f 0%, #020205 100%);
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0.5;
+      animation: hyper-drive var(--d) linear infinite;
+    }
+
+    @keyframes hyper-drive {
+      from { transform: translateZ(0) scale(1); opacity: 0; }
+      10% { opacity: 1; }
+      to { transform: translateZ(1000px) scale(4); opacity: 0; }
+    }
+
+    /* Vortex Animation styles */
+    .vortex-container {
+      perspective: 1000px;
+      height: 300px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .vortex-item {
+      position: absolute;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-style: italic;
+      white-space: nowrap;
+      filter: blur(2px);
+      opacity: 0;
+      animation: vortex-travel 1.5s linear infinite;
+    }
+
+    @keyframes vortex-travel {
+      0% {
+        transform: translateZ(-800px) rotate(0deg) scale(0);
+        opacity: 0;
+        filter: blur(10px);
+      }
+      20% {
+        opacity: 1;
+        filter: blur(2px);
+      }
+      80% {
+        opacity: 1;
+        filter: blur(0px);
+      }
+      100% {
+        transform: translateZ(500px) rotate(360deg) scale(3);
+        opacity: 0;
+        filter: blur(5px);
+      }
+    }
+
+    /* Glass Panels */
+    .glass-panel {
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .cyber-btn {
+      position: relative;
+      background: transparent;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    .cyber-btn:hover {
+      box-shadow: 0 0 30px var(--neon-cyan);
+      background: var(--neon-cyan);
+      color: #000;
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    /* Scratch Card Ready Glow */
+    @keyframes cyber-ready-pulse {
+      0%, 100% { 
+        box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); 
+        border-color: rgba(0, 243, 255, 0.3);
+      }
+      50% { 
+        box-shadow: 0 0 40px rgba(0, 243, 255, 0.5); 
+        border-color: rgba(0, 243, 255, 0.8);
+      }
+    }
+    .ready-glow {
+      animation: cyber-ready-pulse 2s ease-in-out infinite;
+    }
+
+    /* Holographic Shimmer Effect */
+    @keyframes holographic-shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .holographic-overlay {
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 243, 255, 0.05) 45%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(157, 0, 255, 0.05) 55%,
+        transparent 100%
+      );
+      background-size: 200% 100%;
+      animation: holographic-shimmer 3s infinite linear;
+      pointer-events: none;
+    }
+
+    /* Glitch Texture */
+    @keyframes glitch-texture {
+      0% { transform: translate(0,0); }
+      10% { transform: translate(-2px, 1px); }
+      20% { transform: translate(1px, -1px); }
+      30% { transform: translate(-1px, 2px); }
+      40% { transform: translate(2px, -2px); }
+      50% { transform: translate(-2px, 1px); }
+      100% { transform: translate(0,0); }
+    }
+    .glitch-noise {
+      position: absolute;
+      inset: 0;
+      opacity: 0.1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      animation: glitch-texture 0.2s infinite;
+    }
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
+  }
+}
+</script>
+</head>
+<body>
+  <div id="custom-cursor"></div>
+  <div class="space-bg" id="star-field"></div>
+  <div id="root"></div>
+  <script>
+    const field = document.getElementById('star-field');
+    for(let i=0; i<200; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.setProperty('--d', `${1 + Math.random() * 5}s`);
+      star.style.width = star.style.height = `${1 + Math.random() * 2}px`;
+      field.appendChild(star);
+    }
+
+    const cursor = document.getElementById('custom-cursor');
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+    });
+    document.addEventListener('mousedown', () => cursor.classList.add('cursor-active'));
+    document.addEventListener('mouseup', () => cursor.classList.remove('cursor-active'));
+  </script>
+</body>
+</html>
