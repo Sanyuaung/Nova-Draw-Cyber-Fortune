@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { GameState, WinnerData } from './types';
 import ScratchCard from './components/ScratchCard';
