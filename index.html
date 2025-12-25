@@ -93,7 +93,7 @@
     /* Vortex Animation styles */
     .vortex-container {
       perspective: 1000px;
-      height: 450px;
+      height: 350px;
       width: 100%;
       display: flex;
       align-items: center;
@@ -191,21 +191,21 @@
 
     /* Glitch Texture */
     @keyframes glitch-texture {
-      0% { transform: translate(0,0); }
-      10% { transform: translate(-2px, 1px); }
-      20% { transform: translate(1px, -1px); }
-      30% { transform: translate(-1px, 2px); }
-      40% { transform: translate(2px, -2px); }
-      50% { transform: translate(-2px, 1px); }
-      100% { transform: translate(0,0); }
+      0% { transform: translate(0,0) skew(0deg); opacity: 0.1; }
+      10% { transform: translate(-4px, 2px) skew(2deg); opacity: 0.2; }
+      20% { transform: translate(4px, -1px) skew(-1deg); opacity: 0.15; }
+      30% { transform: translate(-2px, 3px) skew(4deg); opacity: 0.25; }
+      40% { transform: translate(2px, -3px) skew(-2deg); opacity: 0.1; }
+      50% { transform: translate(-3px, 1px) skew(1deg); opacity: 0.2; }
+      100% { transform: translate(0,0) skew(0deg); opacity: 0.1; }
     }
     .glitch-noise {
       position: absolute;
       inset: 0;
       opacity: 0.1;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       pointer-events: none;
-      animation: glitch-texture 0.2s infinite;
+      animation: glitch-texture 0.1s infinite steps(2);
     }
   </style>
 <script type="importmap">
@@ -215,8 +215,8 @@
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "react/": "https://esm.sh/react@^19.2.3/",
     "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
-    "vite": "https://esm.sh/vite@^7.3.0"
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.3.4",
+    "vite": "https://esm.sh/vite@^6.0.3"
   }
 }
 </script>
@@ -226,7 +226,7 @@
   <div class="space-bg" id="star-field"></div>
   <div id="root"></div>
 
-  <!-- Entry Point Script for Vite/Vercel -->
+  <!-- Entry Point Script -->
   <script type="module" src="/index.tsx"></script>
 
   <script>

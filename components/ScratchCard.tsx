@@ -10,14 +10,16 @@ interface ScratchCardProps {
 
 const ScratchCard: React.FC<ScratchCardProps> = ({ 
   onReveal, 
-  width = 480, 
-  height = 280, 
+  width = 440, 
+  height = 260, 
   children 
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [revealed, setRevealed] = useState(false);
+  const [glitchFactor, setGlitchFactor] = useState(0);
   const lastPos = useRef<{ x: number; y: number } | null>(null);
+  const lastCheckTime = useRef<number>(0);
 
   const initCanvas = useCallback(() => {
     const canvas = canvasRef.current;
@@ -25,59 +27,37 @@ const ScratchCard: React.FC<ScratchCardProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Digital Hologram Foil
+    // Background Foil
     const gradient = ctx.createLinearGradient(0, 0, width, height);
     gradient.addColorStop(0, '#0a0a0a');
-    gradient.addColorStop(0.5, '#1a1a1a');
+    gradient.addColorStop(0.5, '#161616');
     gradient.addColorStop(1, '#050505');
-    
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, width, height);
 
-    // Grid Pattern
-    ctx.strokeStyle = 'rgba(0, 243, 255, 0.15)';
+    // Grid
+    ctx.strokeStyle = 'rgba(0, 243, 255, 0.1)';
     ctx.lineWidth = 1;
-    for (let i = 0; i < width; i += 20) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, height);
-      ctx.stroke();
-    }
-    for (let i = 0; i < height; i += 20) {
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(width, i);
-      ctx.stroke();
-    }
+    for (let i = 0; i < width; i += 20) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke(); }
+    for (let i = 0; i < height; i += 20) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(width, i); ctx.stroke(); }
 
-    // Binary Data Texture
-    ctx.fillStyle = '#00f3ff';
-    ctx.font = '8px monospace';
-    ctx.globalAlpha = 0.3;
-    for (let i = 0; i < width; i += 40) {
-      for (let j = 0; j < height; j += 15) {
-        ctx.fillText(Math.random() > 0.5 ? '101' : '010', i, j);
-      }
-    }
-    ctx.globalAlpha = 1.0;
-
-    // Center Label
+    // Label
     ctx.fillStyle = '#fff'; 
-    ctx.font = '700 24px "Syncopate"';
+    ctx.font = '700 18px "Syncopate"';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.shadowBlur = 15;
+    ctx.shadowBlur = 10;
     ctx.shadowColor = '#00f3ff';
-    ctx.fillText('ACCESS GRANTED', width / 2, height / 2 - 15);
-    ctx.font = '400 12px "Syncopate"';
-    ctx.fillText('SCRATCH TO DECRYPT', width / 2, height / 2 + 20);
+    ctx.fillText('IDENTITY SEALED', width / 2, height / 2 - 10);
+    ctx.font = '400 10px "Syncopate"';
+    ctx.fillText('DECRYPT TO REVEAL', width / 2, height / 2 + 15);
     ctx.shadowBlur = 0;
     
-    // Aesthetic Border
+    // Border
     ctx.strokeStyle = '#00f3ff';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([12, 6]);
-    ctx.strokeRect(12, 12, width - 24, height - 24);
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([8, 4]);
+    ctx.strokeRect(10, 10, width - 20, height - 20);
     ctx.setLineDash([]);
   }, [width, height]);
 
@@ -85,7 +65,23 @@ const ScratchCard: React.FC<ScratchCardProps> = ({
     initCanvas();
   }, [initCanvas]);
 
+  // Handle glitch updates for visuals
+  useEffect(() => {
+    if (!isDrawing) {
+      setGlitchFactor(0);
+      return;
+    }
+    const interval = setInterval(() => {
+      setGlitchFactor(Math.random());
+    }, 60);
+    return () => clearInterval(interval);
+  }, [isDrawing]);
+
   const checkRevealPercentage = useCallback(() => {
+    const now = Date.now();
+    if (now - lastCheckTime.current < 200) return; // Throttled check for smoothness
+    lastCheckTime.current = now;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -100,7 +96,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({
     }
 
     const percentage = (transparentPixels / (width * height)) * 100;
-    if (percentage > 45 && !revealed) {
+    if (percentage > 40 && !revealed) {
       setRevealed(true);
       onReveal();
     }
@@ -119,7 +115,7 @@ const ScratchCard: React.FC<ScratchCardProps> = ({
     ctx.globalCompositeOperation = 'destination-out';
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
-    ctx.lineWidth = 65;
+    ctx.lineWidth = 55;
 
     ctx.beginPath();
     if (lastPos.current) {
@@ -130,19 +126,11 @@ const ScratchCard: React.FC<ScratchCardProps> = ({
     ctx.lineTo(currentX, currentY);
     ctx.stroke();
 
-    // Add "Digital Sparks" (temporary glitch particles)
+    // Particle Sparks
     ctx.globalCompositeOperation = 'source-over';
-    for (let i = 0; i < 4; i++) {
-      ctx.fillStyle = i % 2 === 0 ? '#00f3ff' : '#9d00ff';
-      ctx.globalAlpha = 0.5;
-      const size = Math.random() * 20;
-      ctx.fillRect(
-        currentX + (Math.random() - 0.5) * 80,
-        currentY + (Math.random() - 0.5) * 80,
-        size,
-        2
-      );
-    }
+    ctx.fillStyle = Math.random() > 0.5 ? '#00f3ff' : '#9d00ff';
+    ctx.globalAlpha = 0.6;
+    ctx.fillRect(currentX + (Math.random() - 0.5) * 40, currentY + (Math.random() - 0.5) * 40, 10, 1);
     ctx.globalAlpha = 1.0;
 
     lastPos.current = { x: currentX, y: currentY };
@@ -161,22 +149,21 @@ const ScratchCard: React.FC<ScratchCardProps> = ({
 
   return (
     <div 
-      className={`relative inline-block select-none rounded-2xl overflow-hidden border-2 transition-all duration-500 bg-black ${!revealed ? 'ready-glow border-cyan-500/50' : 'border-white/10'}`} 
+      className={`relative select-none rounded-2xl overflow-hidden border-2 transition-all duration-500 bg-black mx-auto flex items-center justify-center ${!revealed ? 'ready-glow border-cyan-500/50' : 'border-white/10'}`} 
       style={{ width, height, maxWidth: '100%' }}
     >
-      {/* Background Content (Hidden until scratch) */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-black/80">
+      {/* Background Content */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center bg-black/80">
         {children}
-        {/* Subtle holographic shimmer over revealed content */}
-        {revealed && <div className="absolute inset-0 holographic-overlay opacity-30"></div>}
+        {revealed && <div className="absolute inset-0 holographic-overlay opacity-20"></div>}
       </div>
       
-      {/* Scratch Foil Layer */}
+      {/* Canvas */}
       <canvas
         ref={canvasRef}
         width={width}
         height={height}
-        className={`absolute inset-0 coin-cursor transition-opacity duration-1000 ${revealed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        className={`absolute inset-0 transition-opacity duration-1000 block ${revealed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
         onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
         onMouseMove={(e) => isDrawing && scratch(e.clientX, e.clientY)}
         onMouseUp={handleEnd}
@@ -186,12 +173,25 @@ const ScratchCard: React.FC<ScratchCardProps> = ({
         onTouchEnd={handleEnd}
       />
 
-      {/* Dynamic Glitch Overlays while scratching */}
+      {/* Dynamic Digital Glitch triggered on scratch */}
       {!revealed && isDrawing && (
-        <>
-          <div className="absolute inset-0 holographic-overlay opacity-60"></div>
-          <div className="glitch-noise"></div>
-        </>
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="glitch-noise opacity-40"></div>
+          {/* Randomized Glitch Bars */}
+          <div 
+            className="absolute w-full h-[2px] bg-cyan-400 opacity-50 transition-all duration-75" 
+            style={{ top: `${glitchFactor * 100}%`, left: `${(glitchFactor - 0.5) * 10}px` }}
+          />
+          <div 
+            className="absolute w-[1px] h-full bg-purple-500 opacity-30 transition-all duration-75" 
+            style={{ left: `${(1 - glitchFactor) * 100}%`, top: `${(glitchFactor - 0.5) * 5}px` }}
+          />
+          {/* Tint flash */}
+          <div 
+            className="absolute inset-0 transition-colors duration-100" 
+            style={{ backgroundColor: glitchFactor > 0.8 ? 'rgba(0, 243, 255, 0.05)' : 'transparent' }} 
+          />
+        </div>
       )}
     </div>
   );
